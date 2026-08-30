@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Wallet, PieChart } from "lucide-react";
 import { Person } from "@/types/expense";
 
@@ -19,10 +18,13 @@ const CATEGORY_COLORS: Record<string, string> = {
   Smoke: "#ffffff",
 };
 
+const cardBase =
+  "rounded-xl border shadow-xl backdrop-blur-xl text-white p-5";
+
 export function StatsCards({ totalSpent, personTotals, people, categoryTotals }: StatsCardsProps) {
   const personData = people
     .filter((p) => (personTotals[p.id] || 0) > 0)
-    .map((p, i) => ({
+    .map((p) => ({
       name: p.name,
       value: personTotals[p.id] || 0,
       color: p.hexColor || "#6b7280",
@@ -71,93 +73,87 @@ export function StatsCards({ totalSpent, personTotals, people, categoryTotals }:
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <Card className="bg-emerald-500/20 text-white shadow-xl border-0 backdrop-blur-xl border border-emerald-400/30">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-emerald-200 text-sm font-medium">Total Spent</p>
-              <p className="text-3xl font-bold mt-1">₹{totalSpent.toLocaleString("en-IN")}</p>
-            </div>
-            <div className="p-3 bg-emerald-500/20 rounded-xl border border-emerald-400/30">
-              <Wallet className="h-6 w-6 text-emerald-300" />
-            </div>
+      <div className={`${cardBase} bg-emerald-500/20 border-emerald-400/30`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-emerald-200 text-sm font-medium">Total Spent</p>
+            <p className="text-3xl font-bold mt-1">₹{totalSpent.toLocaleString("en-IN")}</p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="p-3 bg-emerald-500/20 rounded-xl border border-emerald-400/30">
+            <Wallet className="h-6 w-6 text-emerald-300" />
+          </div>
+        </div>
+      </div>
 
-      <Card className="bg-white/10 backdrop-blur-xl shadow-lg border border-white/20">
-        <CardContent className="p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <PieChart className="h-5 w-5 text-indigo-300" />
-            <h3 className="font-semibold text-white">Individual Spending</h3>
+      <div className={`${cardBase} bg-white/10 border-white/20 shadow-lg`}>
+        <div className="flex items-center gap-2 mb-3">
+          <PieChart className="h-5 w-5 text-indigo-300" />
+          <h3 className="font-semibold text-white">Individual Spending</h3>
+        </div>
+        <div className="flex items-center gap-4">
+          <svg viewBox="0 0 200 200" className="w-32 h-32">
+            {personSegments.map((segment, i) => (
+              <path
+                key={i}
+                d={createPiePath(segment.startAngle, segment.angle, 100)}
+                fill={segment.color}
+                fillOpacity="0.9"
+                stroke="white"
+                strokeWidth="2"
+              />
+            ))}
+            {personSegments.length === 0 && (
+              <circle cx="100" cy="100" r="100" fill="rgba(255,255,255,0.1)" />
+            )}
+          </svg>
+          <div className="space-y-2">
+            {personSegments.map((segment, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: segment.color, opacity: 0.9 }} />
+                <span className="text-sm text-white/80">{segment.name}</span>
+                <span className="text-sm font-semibold text-white">
+                  ₹{segment.value.toLocaleString("en-IN")}
+                </span>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center gap-4">
-            <svg viewBox="0 0 200 200" className="w-32 h-32">
-              {personSegments.map((segment, i) => (
-                <path
-                  key={i}
-                  d={createPiePath(segment.startAngle, segment.angle, 100)}
-                  fill={segment.color}
-                  fillOpacity="0.9"
-                  stroke="white"
-                  strokeWidth="2"
-                />
-              ))}
-              {personSegments.length === 0 && (
-                <circle cx="100" cy="100" r="100" fill="rgba(255,255,255,0.1)" />
-              )}
-            </svg>
-            <div className="space-y-2">
-              {personSegments.map((segment, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: segment.color, opacity: 0.9 }} />
-                  <span className="text-sm text-white/80">{segment.name}</span>
-                  <span className="text-sm font-semibold text-white">
-                    ₹{segment.value.toLocaleString("en-IN")}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card className="bg-white/10 backdrop-blur-xl shadow-lg border border-white/20">
-        <CardContent className="p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <PieChart className="h-5 w-5 text-emerald-300" />
-            <h3 className="font-semibold text-white">Category Breakdown</h3>
+      <div className={`${cardBase} bg-white/10 border-white/20 shadow-lg`}>
+        <div className="flex items-center gap-2 mb-3">
+          <PieChart className="h-5 w-5 text-emerald-300" />
+          <h3 className="font-semibold text-white">Category Breakdown</h3>
+        </div>
+        <div className="flex items-center gap-4">
+          <svg viewBox="0 0 200 200" className="w-32 h-32">
+            {categorySegments.map((segment, i) => (
+              <path
+                key={i}
+                d={createPiePath(segment.startAngle, segment.angle, 100)}
+                fill={segment.color}
+                fillOpacity="0.9"
+                stroke="white"
+                strokeWidth="2"
+              />
+            ))}
+            {categorySegments.length === 0 && (
+              <circle cx="100" cy="100" r="100" fill="rgba(255,255,255,0.1)" />
+            )}
+          </svg>
+          <div className="space-y-1">
+            {categorySegments.slice(0, 5).map((segment, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: segment.color, opacity: 0.9 }} />
+                <span className="text-sm text-white/80">{segment.name}</span>
+                <span className="text-sm font-semibold text-white">
+                  ₹{segment.value.toLocaleString("en-IN")}
+                </span>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center gap-4">
-            <svg viewBox="0 0 200 200" className="w-32 h-32">
-              {categorySegments.map((segment, i) => (
-                <path
-                  key={i}
-                  d={createPiePath(segment.startAngle, segment.angle, 100)}
-                  fill={segment.color}
-                  fillOpacity="0.9"
-                  stroke="white"
-                  strokeWidth="2"
-                />
-              ))}
-              {categorySegments.length === 0 && (
-                <circle cx="100" cy="100" r="100" fill="rgba(255,255,255,0.1)" />
-              )}
-            </svg>
-            <div className="space-y-1">
-              {categorySegments.slice(0, 5).map((segment, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: segment.color, opacity: 0.9 }} />
-                  <span className="text-sm text-white/80">{segment.name}</span>
-                  <span className="text-sm font-semibold text-white">
-                    ₹{segment.value.toLocaleString("en-IN")}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Trash2, MapPin, Clock, User, CreditCard, StickyNote, Camera, Maximize2, Users } from "lucide-react";
 import { Expense, Person } from "@/types/expense";
 
@@ -22,6 +19,9 @@ const CATEGORY_COLORS: Record<string, { bg: string; border: string; text: string
   Smoke: { bg: "rgba(255, 255, 255, 0.1)", border: "rgba(255, 255, 255, 0.3)", text: "text-white" },
 };
 
+const badgeBase =
+  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border";
+
 export function ExpenseList({ expenses, onDelete, onSelect, selectedExpense, people }: ExpenseListProps) {
   if (expenses.length === 0) {
     return (
@@ -39,13 +39,11 @@ export function ExpenseList({ expenses, onDelete, onSelect, selectedExpense, peo
   };
 
   return (
-    <ScrollArea className="h-[500px] pr-4">
+    <div className="h-[500px] overflow-y-auto pr-4">
       <div className="space-y-3">
         {expenses.map((expense) => {
-          const paidByPerson = people.find((p) => p.id === expense.paidBy);
-          const paidByColor = paidByPerson?.hexColor || "#6b7280";
           const categoryColor = CATEGORY_COLORS[expense.category] || CATEGORY_COLORS.Miscellaneous;
-          
+
           return (
             <div
               key={expense.id}
@@ -75,9 +73,12 @@ export function ExpenseList({ expenses, onDelete, onSelect, selectedExpense, peo
                   <div>
                     <div className="flex items-center gap-2">
                       <h4 className={`font-semibold ${categoryColor.text}`}>{expense.subcategory || expense.category}</h4>
-                      <Badge variant="secondary" className={`text-xs ${categoryColor.bg} ${categoryColor.text} border ${categoryColor.border}`}>
+                      <span
+                        className={`${badgeBase} text-xs ${categoryColor.text}`}
+                        style={{ backgroundColor: categoryColor.bg, borderColor: categoryColor.border }}
+                      >
                         {expense.category}
-                      </Badge>
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 mt-1 text-xs text-white/70">
                       <span className="flex items-center gap-1">
@@ -113,45 +114,43 @@ export function ExpenseList({ expenses, onDelete, onSelect, selectedExpense, peo
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-lg font-bold text-white">₹{expense.amount.toLocaleString("en-IN")}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-500 hover:bg-white/10"
+                  <button
+                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-500 hover:bg-white/10 rounded-md p-2 transition-all"
                     onClick={(e) => {
                       e.stopPropagation();
                       onDelete(expense.id);
                     }}
                   >
                     <Trash2 className="h-4 w-4" />
-                  </Button>
+                  </button>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2 mt-3">
-                <Badge className="bg-white/10 text-white border border-white/20">
+                <span className={`${badgeBase} bg-white/10 text-white border-white/20`}>
                   <User className="h-3 w-3 mr-1" />
                   {getPersonName(expense.paidBy)} paid
-                </Badge>
-                <Badge className="bg-white/10 text-white border border-white/20">
+                </span>
+                <span className={`${badgeBase} bg-white/10 text-white border-white/20`}>
                   <CreditCard className="h-3 w-3 mr-1" />
                   {expense.paymentMode}
-                </Badge>
+                </span>
                 {expense.splitAmong && expense.splitAmong.length > 1 && (
-                  <Badge className="bg-white/10 text-white border border-white/20">
+                  <span className={`${badgeBase} bg-white/10 text-white border-white/20`}>
                     <Users className="h-3 w-3 mr-1" />
                     {expense.splitAmong.length} split
-                  </Badge>
+                  </span>
                 )}
                 {expense.photo && (
-                  <Badge className="bg-purple-500/30 text-purple-200 border border-purple-400/30">
+                  <span className={`${badgeBase} bg-purple-500/30 text-purple-200 border-purple-400/30`}>
                     <Camera className="h-3 w-3 mr-1" />
                     Photo
-                  </Badge>
+                  </span>
                 )}
-                <Badge className="bg-white/10 text-white border border-white/20 ml-auto">
+                <span className={`${badgeBase} bg-white/10 text-white border-white/20 ml-auto`}>
                   <Maximize2 className="h-3 w-3 mr-1" />
                   Click to expand
-                </Badge>
+                </span>
               </div>
 
               {expense.splitAmong && expense.splitAmong.length > 1 && (
@@ -170,7 +169,7 @@ export function ExpenseList({ expenses, onDelete, onSelect, selectedExpense, peo
           );
         })}
       </div>
-    </ScrollArea>
+    </div>
   );
 }
 

@@ -1,9 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MapPin, Plus, StickyNote, Camera, ImagePlus, Users } from "lucide-react";
 import { Expense, Person, PaymentMode } from "@/types/expense";
 
@@ -64,70 +59,79 @@ export function ExpenseForm({ people, categories, onAdd, splitAll }: ExpenseForm
     setPhoto("");
   };
 
+  const selectClass =
+    "w-full flex h-10 items-center justify-between rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:text-white [&>span]:line-clamp-1";
+
+  const inputClass =
+    "flex h-10 w-full rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 disabled:cursor-not-allowed disabled:opacity-50";
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-white">Category</Label>
-        <Select value={category} onValueChange={(v) => { setCategory(v); setSubcategory(""); }}>
-          <SelectTrigger className="w-full bg-white/10 border-white/20 text-white">
-            <SelectValue placeholder="Select category" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((cat) => (
-              <SelectItem key={cat.name} value={cat.name}>
-                {cat.icon} {cat.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <label className="text-sm font-medium text-white">Category</label>
+        <select
+          value={category}
+          onChange={(e) => {
+            setCategory(e.target.value);
+            setSubcategory("");
+          }}
+          className={selectClass}
+        >
+          <option value="" className="bg-slate-800 text-white">Select category</option>
+          {categories.map((cat) => (
+            <option key={cat.name} value={cat.name} className="bg-slate-800 text-white">
+              {cat.icon} {cat.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {category && (
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-white">Subcategory</Label>
-          <Select value={subcategory} onValueChange={setSubcategory}>
-            <SelectTrigger className="w-full bg-white/10 border-white/20 text-white">
-              <SelectValue placeholder="Select subcategory" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.find((c) => c.name === category)?.subcategories.map((sub) => (
-                <SelectItem key={sub} value={sub}>
-                  {sub}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <label className="text-sm font-medium text-white">Subcategory</label>
+          <select
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            className={selectClass}
+          >
+            <option value="" className="bg-slate-800 text-white">Select subcategory</option>
+            {categories.find((c) => c.name === category)?.subcategories.map((sub) => (
+              <option key={sub} value={sub} className="bg-slate-800 text-white">
+                {sub}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-white">Amount (₹)</Label>
+        <label className="text-sm font-medium text-white">Amount (₹)</label>
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60">₹</span>
-          <Input
+          <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.00"
-            className="pl-8 bg-white/10 border-white/20 text-white placeholder:text-white/50"
+            className={`pl-8 ${inputClass}`}
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-white">Paid By</Label>
-        <Select value={paidBy} onValueChange={setPaidBy}>
-          <SelectTrigger className="w-full bg-white/10 border-white/20 text-white">
-            <SelectValue placeholder="Who paid?" />
-          </SelectTrigger>
-          <SelectContent>
-            {people.map((person) => (
-              <SelectItem key={person.id} value={person.id}>
-                {person.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <label className="text-sm font-medium text-white">Paid By</label>
+        <select
+          value={paidBy}
+          onChange={(e) => setPaidBy(e.target.value)}
+          className={selectClass}
+        >
+          <option value="" className="bg-slate-800 text-white">Who paid?</option>
+          {people.map((person) => (
+            <option key={person.id} value={person.id} className="bg-slate-800 text-white">
+              {person.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {splitAll && (
@@ -143,7 +147,7 @@ export function ExpenseForm({ people, categories, onAdd, splitAll }: ExpenseForm
       )}
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-white">Payment Mode</Label>
+        <label className="text-sm font-medium text-white">Payment Mode</label>
         <div className="grid grid-cols-3 gap-2">
           {(["UPI", "Cash", "FASTag"] as PaymentMode[]).map((mode) => (
             <button
@@ -162,48 +166,48 @@ export function ExpenseForm({ people, categories, onAdd, splitAll }: ExpenseForm
       </div>
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-white">Location</Label>
+        <label className="text-sm font-medium text-white">Location</label>
         <div className="relative">
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/60" />
-          <Input
+          <input
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g., Theni HP Pump"
-            className="pl-9 bg-white/10 border-white/20 text-white placeholder:text-white/50"
+            className={`pl-9 ${inputClass}`}
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-white">Address</Label>
-        <Input
+        <label className="text-sm font-medium text-white">Address</label>
+        <input
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Auto-filled from location"
-          className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+          className={inputClass}
         />
       </div>
 
       {category === "Miscellaneous" && (
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-white flex items-center gap-2">
+          <label className="text-sm font-medium text-white flex items-center gap-2">
             <StickyNote className="h-4 w-4 text-indigo-300" />
             Notes
-          </Label>
-          <Textarea
+          </label>
+          <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Enter details of the miscellaneous expense..."
-            className="min-h-[80px] bg-white/10 border-white/20 text-white placeholder:text-white/50"
+            className={`min-h-[80px] ${inputClass} h-auto py-2`}
           />
         </div>
       )}
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium text-white flex items-center gap-2">
+        <label className="text-sm font-medium text-white flex items-center gap-2">
           <Camera className="h-4 w-4 text-indigo-300" />
           Place Photo
-        </Label>
+        </label>
         <div className="flex items-center gap-3">
           <label className="flex-1 cursor-pointer">
             <div className="flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-white/20 bg-white/10 hover:bg-white/20 transition-all">
@@ -218,10 +222,13 @@ export function ExpenseForm({ people, categories, onAdd, splitAll }: ExpenseForm
         </div>
       </div>
 
-      <Button onClick={handleSubmit} className="w-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg border border-indigo-400">
-        <Plus className="h-4 w-4 mr-2" />
+      <button
+        onClick={handleSubmit}
+        className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium shadow-lg border border-indigo-400 h-10 px-4 py-2 transition-all"
+      >
+        <Plus className="h-4 w-4" />
         Add Expense
-      </Button>
+      </button>
     </div>
   );
 }
