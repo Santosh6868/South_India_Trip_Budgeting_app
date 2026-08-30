@@ -1,7 +1,5 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Wallet, Users, TrendingUp, Plus, PieChart, X, Clock, User, CreditCard, MapPin, StickyNote, Split, Navigation } from "lucide-react";
+import { Users, TrendingUp, Plus, X, Clock, User, CreditCard, MapPin, StickyNote, Split, Navigation } from "lucide-react";
 import { ExpenseForm } from "@/components/ExpenseForm";
 import { ExpenseList } from "@/components/ExpenseList";
 import { StatsCards } from "@/components/StatsCards";
@@ -105,41 +103,41 @@ export default function App() {
 
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
-              <Card className="shadow-xl border-0 bg-white/10 backdrop-blur-xl border border-white/20">
-                <CardHeader className="border-b border-white/10">
-                  <CardTitle className="flex items-center gap-2 text-lg text-white">
+              <div className="rounded-xl shadow-xl bg-white/10 backdrop-blur-xl border border-white/20">
+                <div className="flex flex-col space-y-1.5 p-6 border-b border-white/10">
+                  <h3 className="flex items-center gap-2 text-lg font-semibold leading-none tracking-tight text-white">
                     <Plus className="h-5 w-5 text-indigo-300" />
                     Add Expense
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-4">
+                  </h3>
+                </div>
+                <div className="p-4">
                   <ExpenseForm people={PEOPLE} categories={CATEGORIES} onAdd={addExpense} splitAll={splitAll} />
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
 
             <div className="lg:col-span-2">
-              <Card className="shadow-xl border-0 bg-white/10 backdrop-blur-xl border border-white/20">
-                <CardHeader className="border-b border-white/10">
+              <div className="rounded-xl shadow-xl bg-white/10 backdrop-blur-xl border border-white/20">
+                <div className="flex flex-col space-y-1.5 p-6 border-b border-white/10">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2 text-lg text-white">
+                    <h3 className="flex items-center gap-2 text-lg font-semibold leading-none tracking-tight text-white">
                       <TrendingUp className="h-5 w-5 text-indigo-300" />
                       Expense History
-                    </CardTitle>
-                    <Badge variant="secondary" className="text-sm bg-white/10 text-white border border-white/20">
+                    </h3>
+                    <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-sm font-medium bg-white/10 text-white border border-white/20">
                       {expenses.length} entries
-                    </Badge>
+                    </span>
                   </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <ExpenseList 
-                    expenses={expenses} 
-                    onDelete={deleteExpense} 
+                </div>
+                <div className="p-4">
+                  <ExpenseList
+                    expenses={expenses}
+                    onDelete={deleteExpense}
                     onSelect={setSelectedExpense}
                     selectedExpense={selectedExpense}
                     people={PEOPLE}
                   />
-                  
+
                   {/* Split Among 4 Button */}
                   <div className="mt-4 pt-4 border-t border-white/10">
                     <button
@@ -150,8 +148,8 @@ export default function App() {
                       Split Among 4
                     </button>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </div>
         </main>
@@ -159,11 +157,11 @@ export default function App() {
 
       {/* Split Modal */}
       {showSplitModal && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={() => setShowSplitModal(false)}
         >
-          <div 
+          <div
             className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-md w-full p-6"
             onClick={(e) => e.stopPropagation()}
           >
@@ -219,15 +217,15 @@ export default function App() {
 
       {/* Expanded Expense Modal */}
       {selectedExpense && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onDoubleClick={() => setSelectedExpense(null)}
         >
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="relative">
               {selectedExpense.photo ? (
-                <img 
-                  src={selectedExpense.photo} 
+                <img
+                  src={selectedExpense.photo}
                   alt={selectedExpense.location}
                   className="w-full h-64 object-cover rounded-t-2xl"
                 />
@@ -243,7 +241,7 @@ export default function App() {
                 <X className="h-5 w-5 text-slate-700" />
               </button>
             </div>
-            
+
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -307,9 +305,12 @@ export default function App() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {selectedExpense.splitAmong.map((personId) => (
-                      <Badge key={personId} className={`${getPersonColor(personId)} text-white border border-white/30`}>
+                      <span
+                        key={personId}
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium text-white border border-white/30 ${getPersonColor(personId)}`}
+                      >
                         {getPersonName(personId)}
-                      </Badge>
+                      </span>
                     ))}
                   </div>
                 </div>
