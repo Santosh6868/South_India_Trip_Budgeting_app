@@ -3,7 +3,7 @@ import { Users, TrendingUp, Plus, X, Clock, User, CreditCard, MapPin, StickyNote
 import { ExpenseForm } from "@/components/ExpenseForm";
 import { ExpenseList } from "@/components/ExpenseList";
 import { StatsCards } from "@/components/StatsCards";
-import { Expense, Person, PaymentMode } from "@/types/expense";
+import { Expense, Person } from "@/types/expense";
 
 const PEOPLE: Person[] = [
   { id: "sai", name: "Sai", color: "bg-emerald-500", hexColor: "#10b981" },
@@ -25,7 +25,7 @@ const CATEGORIES = [
 export default function App() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
-  const [splitAll, setSplitAll] = useState(false);
+  const [splitAll] = useState(false);
   const [showSplitModal, setShowSplitModal] = useState(false);
 
   const addExpense = (expense: Expense) => {

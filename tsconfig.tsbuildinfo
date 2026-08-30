@@ -1,0 +1,1 @@
+{"root":["./App.tsx","./components/ExpenseForm.tsx","./components/ExpenseList.tsx","./components/StatsCards.tsx","./types/expense.ts","./src/main.tsx"],"version":"5.9.3"}
